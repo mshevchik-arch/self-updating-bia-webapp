@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIA Results - Block Business Resilience</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #ffffff;
+            color: #000000;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e6e6e6;
+        }
+
+        .block-logo {
+            width: 32px;
+            height: 32px;
+            background: #000000;
+            border-radius: 6px;
+            margin: 0 auto 16px;
+            position: relative;
+        }
+
+        .block-logo::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 16px;
+            height: 16px;
+            background: #ffffff;
+            border-radius: 3px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            color: #666666;
+            font-size: 1rem;
+        }
+
+        .bia-section {
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+            border: 1px solid #e6e6e6;
+            position: relative;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #000000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .confidence-badge {
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .confidence-high {
+            background: #e8f5e8;
+            color: #2d5a2d;
+            border: 1px solid #c3e6c3;
+        }
+
+        .confidence-medium {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .confidence-low {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .auto-populated {
+            background: #ffffff;
+            border: 1px solid #e6e6e6;
+            border-left: 4px solid #000000;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .auto-populated-label {
+            font-size: 0.75rem;
+            color: #666666;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin: 16px 0;
+        }
+
+        .data-item {
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e6e6e6;
+        }
+
+        .data-label {
+            font-weight: 500;
+            color: #666666;
+            font-size: 0.875rem;
+            margin-bottom: 4px;
+        }
+
+        .data-value {
+            font-size: 1rem;
+            color: #000000;
+            font-weight: 500;
+        }
+
+        .edit-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e6e6e6;
+        }
+
+        .edit-header {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #000000;
+        }
+
+        .edit-controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .edit-btn {
+            background: #ffffff;
+            border: 1px solid #e6e6e6;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+
+        .edit-btn:hover {
+            background: #f0f0f0;
+            border-color: #000000;
+        }
+
+        .edit-btn.active {
+            background: #000000;
+            color: #ffffff;
+            border-color: #000000;
+        }
+
+        .edit-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 12px;
+            border: 1px solid #e6e6e6;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.875rem;
+            margin-top: 12px;
+            resize: vertical;
+        }
+
+        .edit-textarea:focus {
+            outline: none;
+            border-color: #000000;
+        }
+
+        .data-source {
+            font-size: 0.75rem;
+            color: #999999;
+            font-style: italic;
+            margin-top: 8px;
+        }
+
+        .action-section {
+            background: #f8f8f8;
+            border-radius: 12px;
+            padding: 32px;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .action-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #000000;
+        }
+
+        .action-subtitle {
+            color: #666666;
+            margin-bottom: 32px;
+            font-size: 1rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 16px 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            min-width: 200px;
+        }
+
+        .btn-primary {
+            background: #000000;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: #333333;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #ffffff;
+            color: #000000;
+            border-color: #e6e6e6;
+        }
+
+        .btn-secondary:hover {
+            background: #f0f0f0;
+            border-color: #000000;
+        }
+
+        .btn-danger {
+            background: #ffffff;
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #dc3545;
+            color: #ffffff;
+        }
+
+        .overall-confidence {
+            background: #ffffff;
+            border: 2px solid #e6e6e6;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .confidence-score {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 8px;
+        }
+
+        .confidence-label {
+            font-size: 1.125rem;
+            color: #666666;
+            margin-bottom: 16px;
+        }
+
+        .confidence-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .confidence-detail {
+            text-align: center;
+        }
+
+        .confidence-detail-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #000000;
+        }
+
+        .confidence-detail-label {
+            font-size: 0.875rem;
+            color: #666666;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e6e6e6;
+            border-top: 3px solid #000000;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .action-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .data-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="block-logo"></div>
+            <h1>Business Impact Analysis</h1>
+            <p class="subtitle" id="functionTitle">Cash App Payment Processing - Generated 12/22/2024</p>
+        </div>
+
+        <div class="overall-confidence">
+            <div class="confidence-score">87%</div>
+            <div class="confidence-label">Overall Confidence Score</div>
+            <div class="confidence-details">
+                <div class="confidence-detail">
+                    <div class="confidence-detail-value">6/6</div>
+                    <div class="confidence-detail-label">Data Sources</div>
+                </div>
+                <div class="confidence-detail">
+                    <div class="confidence-detail-value">94%</div>
+                    <div class="confidence-detail-label">Data Quality</div>
+                </div>
+                <div class="confidence-detail">
+                    <div class="confidence-detail-value">2.3s</div>
+                    <div class="confidence-detail-label">Generation Time</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bia-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    👥 Personnel Information
+                </h2>
+                <span class="confidence-badge confidence-high">High Confidence</span>
+            </div>
+            
+            <div class="auto-populated">
+                <div class="auto-populated-label">🔄 Auto-populated from HR Systems & PagerDuty</div>
+                <div class="data-grid">
+                    <div class="data-item">
+                        <div class="data-label">Team Size</div>
+                        <div class="data-value">32 employees</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Key Personnel</div>
+                        <div class="data-value">Tech Lead, Product Manager, Ops Manager</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Escalation Policy</div>
+                        <div class="data-value">L1 → L2 → Manager → Director</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">On-Call Schedule</div>
+                        <div class="data-value">24/7 Follow-the-sun</div>
+                    </div>
+                </div>
+                <div class="data-source">Source: Active Directory, PagerDuty Configuration</div>
+            </div>
+
+            <div class="edit-section">
+                <div class="edit-header">Review & Modify</div>
+                <div class="edit-controls">
+                    <button class="edit-btn" onclick="toggleEdit(this, 'personnel')">✏️ Edit Details</button>
+                    <button class="edit-btn" onclick="toggleEdit(this, 'personnel-missing')">➕ Add Missing Info</button>
+                    <button class="edit-btn" onclick="toggleEdit(this, 'personnel-remove')">➖ Remove Incorrect Info</button>
+                </div>
+                <textarea class="edit-textarea hidden" id="personnel-edit" placeholder="Add your modifications, corrections, or additional information..."></textarea>
+            </div>
+        </div>
+
+        <div class="bia-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    💰 Business Impact
+                </h2>
+                <span class="confidence-badge confidence-high">High Confidence</span>
+            </div>
+            
+            <div class="auto-populated">
+                <div class="auto-populated-label">🔄 Auto-populated from Financial Systems & Analytics</div>
+                <div class="data-grid">
+                    <div class="data-item">
+                        <div class="data-label">Daily Revenue Impact</div>
+                        <div class="data-value">$2.3M</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Active Customers</div>
+                        <div class="data-value">850,000</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Transaction Volume</div>
+                        <div class="data-value">1.5M daily</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Peak Impact</div>
+                        <div class="data-value">$15M+ (7+ days)</div>
+                    </div>
+                </div>
+                <div class="data-source">Source: Revenue Dashboards, Customer Analytics</div>
+            </div>
+
+            <div class="edit-section">
+                <div class="edit-header">Review & Modify</div>
+                <div class="edit-controls">
+                    <button class="edit-btn" onclick="toggleEdit(this, 'business')">✏️ Edit Details</button>
+                    <button class="edit-btn" onclick="toggleEdit(this, 'business-missing')">➕ Add Missing Info</button>
+                    <button class="edit-btn" onclick="toggleEdit(this, 'business-remove')">➖ Remove Incorrect Info</button>
+                </div>
+                <textarea class="edit-textarea hidden" id="business-edit" placeholder="Add your modifications, corrections, or additional information..."></textarea>
+            </div>
+        </div>
+
+        <div class="bia-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    🔧 Technology Dependencies
+                </h2>
+                <span class="confidence-badge confidence-high">High Confidence</span>
+            </div>
+            
+            <div class="auto-populated">
+                <div class="auto-populated-label">🔄 Auto-populated from Registry (Snowflake) & CMDB</div>
+                <div class="data-grid">
+                    <div class="data-item">
+                        <div class="data-label">Core Technologies</div>
+                        <div class="data-value">Kafka, PostgreSQL, Redis, Kubernetes</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Key Dependencies</div>
+                        <div class="data-value">Payment Rails, KYC Service, Fraud Detection</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Reliability Tier</div>
+                        <div class="data-value">Tier 0 (Critical)</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Deployment Regions</div>
+                        <div class="data-value">US-West-2, US-East-1</div>
+                    </div>
+                </div>
+                <div class="data-source">Source: Registry, Service Mesh Configuration</div>
+            </div>
+
+            <div class="edit-section">
+                <div class="edit-header">Review & Modify</div>
+                <div class="edit-controls">
+                    <button class="edit-btn" onclick="toggleEdit(this, 'technology')">✏️ Edit Details</button>
+                    <button class="edit-btn" onclick="toggleEdit(this, 'technology-missing')">➕ Add Missing Info</button>
+                    <button class="edit-btn" onclick="toggleEdit(this, 'technology-remove')">➖ Remove Incorrect Info</button>
+                </div>
+                <textarea class="edit-textarea hidden" id="technology-edit" placeholder="Add your modifications, corrections, or additional information..."></textarea>
+            </div>
+        </div>
+
+        <div class="bia-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    ⏱️ Recovery Requirements
+                </h2>
+                <span class="confidence-badge confidence-medium">Medium Confidence</span>
+            </div>
+            
+            <div class="auto-populated">
+                <div class="auto-populated-label">🔄 Auto-populated from Rooster Predictions & Monitoring</div>
+                <div class="data-grid">
+                    <div class="data-item">
+                        <div class="data-label">Current RTO</div>
+                        <div class="data-value">15 minutes</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Current RPO</div>
+                        <div class="data-value">5 minutes</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Availability SLA</div>
+                        <div class="data-value">99.97%</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">MTTR</div>
+                        <div class="data-value">30 minutes</div>
+                    </div>
+                </div>
+                <div class="data-source">Source: Rooster Predictions, Historical Incidents</div>
+            </div>
+
+            <div class="edit-section">
+                <div class="edit-header">Review & Modify</div>
+                <div class="edit-controls">
+                    <button class="edit-btn" onclick="toggleEdit(this, 'recovery')">✏️ Edit Details</button>
+                    <button class="edit-btn" onclick="toggleEdit(this, 'recovery-missing')">➕ Add Missing Info</button>
+                    <button class="edit-btn" onclick="toggleEdit(this, 'recovery-remove')">➖ Remove Incorrect Info</button>
+                </div>
+                <textarea class="edit-textarea hidden" id="recovery-edit" placeholder="Add your modifications, corrections, or additional information..."></textarea>
+            </div>
+        </div>
+
+        <div class="bia-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    🏛️ ISO 22301 Compliance
+                </h2>
+                <span class="confidence-badge confidence-high">High Confidence</span>
+            </div>
+            
+            <div class="auto-populated">
+                <div class="auto-populated-label">🔄 Auto-populated from ISO 22301 Framework</div>
+                <div class="data-grid">
+                    <div class="data-item">
+                        <div class="data-label">Business Function Classification</div>
+                        <div class="data-value">Critical - Customer Facing</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">MTPD</div>
+                        <div class="data-value">2 hours</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">MBCO</div>
+                        <div class="data-value">80% capacity within MTPD</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Resource Requirements</div>
+                        <div class="data-value">Dedicated DR site, 24/7 support</div>
+                    </div>
+                </div>
+                <div class="data-source">Source: ISO 22301 Framework, BCM Policies</div>
+            </div>
+
+            <div class="edit-section">
+                <div class="edit-header">Review & Modify</div>
+                <div class="edit-controls">
+                    <button class="edit-btn" onclick="toggleEdit(this, 'iso')">✏️ Edit Details</button>
+                    <button class="edit-btn" onclick="toggleEdit(this, 'iso-missing')">➕ Add Missing Info</button>
+                    <button class="edit-btn" onclick="toggleEdit(this, 'iso-remove')">➖ Remove Incorrect Info</button>
+                </div>
+                <textarea class="edit-textarea hidden" id="iso-edit" placeholder="Add your modifications, corrections, or additional information..."></textarea>
+            </div>
+        </div>
+
+        <div class="action-section">
+            <h2 class="action-title">Review Complete</h2>
+            <p class="action-subtitle">Please review the generated BIA and choose your next action</p>
+            
+            <div class="action-buttons">
+                <button class="action-btn btn-primary" onclick="confirmAndPush()">
+                    ✅ Confirm & Push to Fusion
+                </button>
+                <button class="action-btn btn-secondary" onclick="downloadPDF()">
+                    📄 Download PDF
+                </button>
+                <button class="action-btn btn-danger" onclick="requestChanges()">
+                    ❌ Material Changes Required
+                </button>
+            </div>
+        </div>
+
+        <div class="loading" id="loadingSection">
+            <div class="loading-spinner"></div>
+            <h3 id="loadingTitle">Processing...</h3>
+            <p id="loadingMessage">Please wait while we process your request</p>
+        </div>
+    </div>
+
+    <script>
+        // Load BIA data from localStorage
+        const biaData = JSON.parse(localStorage.getItem('biaData') || '{}');
+        
+        // Update page with BIA data
+        if (biaData.functionName) {
+            document.getElementById('functionTitle').textContent = `${biaData.functionName} - Generated ${new Date(biaData.generatedAt).toLocaleDateString()}`;
+        }
+
+        let editStates = {};
+
+        function toggleEdit(button, sectionId) {
+            const textarea = document.getElementById(sectionId + '-edit');
+            const isActive = button.classList.contains('active');
+            
+            // Reset all buttons in this section
+            const section = button.closest('.edit-section');
+            const buttons = section.querySelectorAll('.edit-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            if (isActive) {
+                // Hide textarea
+                textarea.classList.add('hidden');
+                delete editStates[sectionId];
+            } else {
+                // Show textarea and activate button
+                button.classList.add('active');
+                textarea.classList.remove('hidden');
+                textarea.focus();
+                
+                // Set placeholder based on action
+                if (sectionId.includes('missing')) {
+                    textarea.placeholder = 'What information is missing that should be included?';
+                } else if (sectionId.includes('remove')) {
+                    textarea.placeholder = 'What information is incorrect and should be removed?';
+                } else {
+                    textarea.placeholder = 'What changes or corrections need to be made?';
+                }
+                
+                editStates[sectionId] = {
+                    action: sectionId.split('-').pop(),
+                    content: textarea.value
+                };
+            }
+        }
+
+        function confirmAndPush() {
+            const hasEdits = Object.keys(editStates).length > 0;
+            
+            if (hasEdits) {
+                const editSummary = Object.entries(editStates)
+                    .map(([key, value]) => `${key}: ${value.action}`)
+                    .join(', ');
+                
+                if (!confirm(`You have made edits to: ${editSummary}. Do you want to proceed with pushing to Fusion?`)) {
+                    return;
+                }
+            }
+
+            showLoading('Pushing to Fusion...', 'Validating BIA compliance and creating Fusion record...');
+            
+            // Simulate Fusion push
+            setTimeout(() => {
+                hideLoading();
+                alert('✅ BIA successfully pushed to Fusion!\n\nRecord ID: BIA-2024-' + Math.floor(Math.random() * 10000) + '\nStatus: Active\nNext Review: ' + new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toLocaleDateString());
+                
+                // Clear stored data
+                localStorage.removeItem('biaData');
+                
+                // Redirect back to input page
+                window.location.href = 'bia-input.html';
+            }, 3000);
+        }
+
+        function downloadPDF() {
+            showLoading('Generating PDF...', 'Creating comprehensive BIA document with all sections...');
+            
+            // Simulate PDF generation
+            setTimeout(() => {
+                hideLoading();
+                
+                // Create a mock download
+                const link = document.createElement('a');
+                link.href = '#';
+                link.download = `BIA_${biaData.functionName?.replace(/\s+/g, '_') || 'Document'}_${new Date().toISOString().slice(0,10)}.pdf`;
+                link.click();
+                
+                alert('📄 PDF generated successfully!\n\nThe BIA document has been downloaded to your computer.');
+            }, 2500);
+        }
+
+        function requestChanges() {
+            const hasEdits = Object.keys(editStates).length > 0;
+            
+            if (!hasEdits) {
+                alert('Please specify what changes are needed by using the edit controls in each section.');
+                return;
+            }
+
+            showLoading('Processing Change Request...', 'Creating PDF summary and scheduling follow-up discussion...');
+            
+            // Simulate change request processing
+            setTimeout(() => {
+                hideLoading();
+                
+                const changesSummary = Object.entries(editStates)
+                    .map(([key, value]) => {
+                        const section = key.split('-')[0];
+                        const action = value.action;
+                        return `${section.charAt(0).toUpperCase() + section.slice(1)}: ${action} requested`;
+                    })
+                    .join('\n');
+                
+                alert(`❌ Material Changes Requested\n\nSummary of requested changes:\n${changesSummary}\n\n📄 PDF summary has been generated\n📅 Follow-up call will be scheduled\n📧 You will receive a calendar invite shortly`);
+                
+                // Clear stored data
+                localStorage.removeItem('biaData');
+                
+                // Redirect back to input page
+                window.location.href = 'bia-input.html';
+            }, 3500);
+        }
+
+        function showLoading(title, message) {
+            document.getElementById('loadingTitle').textContent = title;
+            document.getElementById('loadingMessage').textContent = message;
+            document.getElementById('loadingSection').style.display = 'block';
+            document.querySelector('.container > *:not(#loadingSection)').style.display = 'none';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingSection').style.display = 'none';
+            document.querySelector('.container > *:not(#loadingSection)').style.display = 'block';
+        }
+
+        // Auto-save edit states
+        document.addEventListener('input', (e) => {
+            if (e.target.classList.contains('edit-textarea')) {
+                const sectionId = e.target.id.replace('-edit', '');
+                if (editStates[sectionId]) {
+                    editStates[sectionId].content = e.target.value;
+                }
+            }
+        });
+
+        // Use dummy data for demo if no real data available
+        if (!biaData.functionName) {
+            // Set dummy data for demonstration
+            const dummyData = {
+                functionName: "Cash App Payment Processing",
+                driName: "Sarah Chen",
+                driTeam: "Cash App Engineering",
+                description: "Core payment processing service handling P2P transfers, card transactions, and merchant payments",
+                referenceLinks: ["https://docs.internal.block.xyz/cash-app-payments", "https://runbooks.internal.block.xyz/payment-processing"],
+                uploadedFiles: ["payment-processing-architecture.pdf", "incident-runbook.md"],
+                generatedAt: new Date().toISOString()
+            };
+            
+            // Update page with dummy data
+            document.getElementById('functionTitle').textContent = `${dummyData.functionName} - Generated ${new Date(dummyData.generatedAt).toLocaleDateString()}`;
+        }
+    </script>
+</body>
+</html>

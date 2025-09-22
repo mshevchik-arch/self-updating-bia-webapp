@@ -1,0 +1,24 @@
+{
+  "name": "self-updating-bia-webapp",
+  "version": "1.0.0",
+  "description": "Self-Updating Business Impact Analysis Web Application with AI-powered data integration",
+  "main": "backend/src/server.js",
+  "scripts": {
+    "dev": "nodemon backend/src/server.js",
+    "start": "node backend/src/server.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "build": "npm run build:frontend",
+    "build:frontend": "cd frontend && npm run build",
+    "install:all": "npm install && cd frontend && npm install",
+    "lint": "eslint backend/src --ext .js",
+    "lint:fix": "eslint backend/src --ext .js --fix"
+  },
+  "keywords": ["bia", "business-impact-analysis", "risk-management", "automation", "ai"],
+  "author": "Block Business Resilience Team",
+  "license": "PROPRIETARY",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+}

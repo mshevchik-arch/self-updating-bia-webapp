@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Self-Updating BIA Generator - Block Business Resilience</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #ffffff;
+            color: #000000;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 40px;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .block-logo {
+            width: 40px;
+            height: 40px;
+            background: #000000;
+            border-radius: 8px;
+            margin: 0 auto 24px;
+            position: relative;
+        }
+
+        .block-logo::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background: #ffffff;
+            border-radius: 4px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.125rem;
+            color: #666666;
+            font-weight: 400;
+        }
+
+        .form-section {
+            background: #fafafa;
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 32px;
+            border: 1px solid #e6e6e6;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: #000000;
+        }
+
+        .form-group {
+            margin-bottom: 32px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #000000;
+            font-size: 0.875rem;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e6e6e6;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            background: #ffffff;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #000000;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .upload-zone {
+            border: 2px dashed #cccccc;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            background: #ffffff;
+        }
+
+        .upload-zone:hover {
+            border-color: #000000;
+            background: #fafafa;
+        }
+
+        .upload-zone.dragover {
+            border-color: #000000;
+            background: #f0f0f0;
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            color: #666666;
+        }
+
+        .upload-text {
+            font-size: 1rem;
+            color: #666666;
+            margin-bottom: 8px;
+        }
+
+        .upload-subtext {
+            font-size: 0.875rem;
+            color: #999999;
+        }
+
+        .file-list {
+            margin-top: 16px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .file-name {
+            font-size: 0.875rem;
+            color: #000000;
+        }
+
+        .file-remove {
+            background: none;
+            border: none;
+            color: #666666;
+            cursor: pointer;
+            font-size: 1.25rem;
+            padding: 4px;
+        }
+
+        .file-remove:hover {
+            color: #000000;
+        }
+
+        .links-section {
+            margin-top: 24px;
+        }
+
+        .link-input {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .link-input input {
+            flex: 1;
+        }
+
+        .add-link-btn {
+            background: #000000;
+            color: #ffffff;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .add-link-btn:hover {
+            background: #333333;
+        }
+
+        .link-list {
+            margin-top: 16px;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .link-url {
+            font-size: 0.875rem;
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .link-url:hover {
+            text-decoration: underline;
+        }
+
+        .generate-btn {
+            background: #000000;
+            color: #ffffff;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.125rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        .generate-btn:hover {
+            background: #333333;
+            transform: translateY(-1px);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .ai-note {
+            background: #f8f8f8;
+            border-left: 4px solid #000000;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 32px;
+        }
+
+        .ai-note-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #000000;
+        }
+
+        .ai-note-text {
+            color: #666666;
+            font-size: 0.875rem;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e6e6e6;
+            border-top: 3px solid #000000;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="block-logo"></div>
+            <h1>Self-Updating BIA</h1>
+            <p class="subtitle">AI-powered Business Impact Analysis generation</p>
+        </div>
+
+        <form id="biaForm">
+            <div class="form-section">
+                <h2 class="section-title">Basic Information</h2>
+                
+                <div class="form-group">
+                    <label for="functionName">Product / Function / Service *</label>
+                    <input type="text" id="functionName" name="functionName" 
+                           placeholder="e.g., Cash App Payment Processing, Square Seller Dashboard, Afterpay BNPL Service" 
+                           required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="driName">DRI Name</label>
+                        <input type="text" id="driName" name="driName" placeholder="Your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="driTeam">Team / Department</label>
+                        <input type="text" id="driTeam" name="driTeam" placeholder="e.g., Cash App Engineering, Square Product">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Additional Context (Optional)</label>
+                    <textarea id="description" name="description" 
+                              placeholder="Any additional context about this service, special considerations, or specific areas of focus..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2 class="section-title">Supporting Documents</h2>
+                
+                <div class="upload-zone" id="uploadZone">
+                    <div class="upload-icon">📄</div>
+                    <div class="upload-text">Drag and drop files here, or click to browse</div>
+                    <div class="upload-subtext">Architecture docs, runbooks, incident reports, etc.</div>
+                    <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.txt,.md" style="display: none;">
+                </div>
+                
+                <div class="file-list" id="fileList"></div>
+
+                <div class="links-section">
+                    <label>Reference Links</label>
+                    <div class="link-input">
+                        <input type="url" id="linkInput" placeholder="https://docs.internal.block.xyz/service-name">
+                        <button type="button" class="add-link-btn" onclick="addLink()">Add Link</button>
+                    </div>
+                    <div class="link-list" id="linkList"></div>
+                </div>
+            </div>
+
+            <button type="submit" class="generate-btn" id="generateBtn">
+                Generate BIA with AI Intelligence
+            </button>
+        </form>
+
+        <div class="loading" id="loadingSection">
+            <div class="loading-spinner"></div>
+            <h3>Generating Your BIA...</h3>
+            <p>Our AI is analyzing your service and gathering data from multiple sources</p>
+            <div id="loadingSteps" style="margin-top: 20px; text-align: left; max-width: 400px; margin-left: auto; margin-right: auto;">
+                <div class="loading-step">🔍 Analyzing service description...</div>
+                <div class="loading-step">📊 Querying Registry (Snowflake)...</div>
+                <div class="loading-step">📟 Fetching PagerDuty data...</div>
+                <div class="loading-step">👥 Gathering personnel information...</div>
+                <div class="loading-step">💰 Calculating business impact...</div>
+                <div class="loading-step">🔮 Running predictive analysis...</div>
+                <div class="loading-step">📋 Generating BIA document...</div>
+            </div>
+        </div>
+
+        <div class="ai-note">
+            <div class="ai-note-title">🤖 AI-Powered Intelligence</div>
+            <div class="ai-note-text">
+                Our system will automatically gather data from Registry, PagerDuty, HR systems, financial analytics, 
+                and monitoring platforms. The AI will analyze your service description and supporting documents to 
+                create a comprehensive BIA with confidence scoring for each section.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+        const linkList = document.getElementById('linkList');
+        const form = document.getElementById('biaForm');
+        const loadingSection = document.getElementById('loadingSection');
+        const generateBtn = document.getElementById('generateBtn');
+
+        let uploadedFiles = [];
+        let referenceLinks = [];
+
+        // File upload handling
+        uploadZone.addEventListener('click', () => fileInput.click());
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            Array.from(files).forEach(file => {
+                if (file.size > 10 * 1024 * 1024) { // 10MB limit
+                    alert(`File ${file.name} is too large. Maximum size is 10MB.`);
+                    return;
+                }
+                uploadedFiles.push(file);
+                addFileToList(file);
+            });
+        }
+
+        function addFileToList(file) {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            fileItem.innerHTML = `
+                <span class="file-name">${file.name} (${formatFileSize(file.size)})</span>
+                <button type="button" class="file-remove" onclick="removeFile('${file.name}')">×</button>
+            `;
+            fileList.appendChild(fileItem);
+        }
+
+        function removeFile(fileName) {
+            uploadedFiles = uploadedFiles.filter(file => file.name !== fileName);
+            updateFileList();
+        }
+
+        function updateFileList() {
+            fileList.innerHTML = '';
+            uploadedFiles.forEach(file => addFileToList(file));
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Link handling
+        function addLink() {
+            const linkInput = document.getElementById('linkInput');
+            const url = linkInput.value.trim();
+            
+            if (!url) return;
+            
+            if (!isValidUrl(url)) {
+                alert('Please enter a valid URL');
+                return;
+            }
+
+            referenceLinks.push(url);
+            addLinkToList(url);
+            linkInput.value = '';
+        }
+
+        function addLinkToList(url) {
+            const linkItem = document.createElement('div');
+            linkItem.className = 'link-item';
+            linkItem.innerHTML = `
+                <a href="${url}" target="_blank" class="link-url">${url}</a>
+                <button type="button" class="file-remove" onclick="removeLink('${url}')">×</button>
+            `;
+            linkList.appendChild(linkItem);
+        }
+
+        function removeLink(url) {
+            referenceLinks = referenceLinks.filter(link => link !== url);
+            updateLinkList();
+        }
+
+        function updateLinkList() {
+            linkList.innerHTML = '';
+            referenceLinks.forEach(url => addLinkToList(url));
+        }
+
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+
+        // Form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const functionName = document.getElementById('functionName').value.trim();
+            if (!functionName) {
+                alert('Please enter a product/function/service name');
+                return;
+            }
+
+            // Show loading
+            form.classList.add('hidden');
+            loadingSection.style.display = 'block';
+            
+            // Animate loading steps
+            animateLoadingSteps();
+
+            // Prepare form data
+            const formData = new FormData();
+            formData.append('functionName', functionName);
+            formData.append('driName', document.getElementById('driName').value);
+            formData.append('driTeam', document.getElementById('driTeam').value);
+            formData.append('description', document.getElementById('description').value);
+            formData.append('referenceLinks', JSON.stringify(referenceLinks));
+            
+            // Add files
+            uploadedFiles.forEach(file => {
+                formData.append('documents', file);
+            });
+
+            try {
+                // Simulate API call for now
+                await new Promise(resolve => setTimeout(resolve, 8000));
+                
+                // Store data for results page
+                const biaData = {
+                    functionName,
+                    driName: document.getElementById('driName').value,
+                    driTeam: document.getElementById('driTeam').value,
+                    description: document.getElementById('description').value,
+                    referenceLinks,
+                    uploadedFiles: uploadedFiles.map(f => f.name),
+                    generatedAt: new Date().toISOString()
+                };
+                
+                localStorage.setItem('biaData', JSON.stringify(biaData));
+                
+                // Redirect to results page
+                window.location.href = 'bia-results.html';
+                
+            } catch (error) {
+                console.error('Error generating BIA:', error);
+                alert('Error generating BIA. Please try again.');
+                
+                // Show form again
+                loadingSection.style.display = 'none';
+                form.classList.remove('hidden');
+            }
+        });
+
+        function animateLoadingSteps() {
+            const steps = document.querySelectorAll('.loading-step');
+            steps.forEach((step, index) => {
+                setTimeout(() => {
+                    step.style.opacity = '0.5';
+                    step.style.color = '#666666';
+                }, index * 1000);
+                
+                setTimeout(() => {
+                    step.style.opacity = '1';
+                    step.style.color = '#000000';
+                    step.innerHTML = '✅ ' + step.innerHTML.substring(2);
+                }, (index + 1) * 1000);
+            });
+        }
+
+        // Allow Enter key to add links
+        document.getElementById('linkInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addLink();
+            }
+        });
+    </script>
+</body>
+</html>
